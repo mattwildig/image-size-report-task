@@ -15,6 +15,10 @@ import javax.imageio.ImageIO;
 
 public class ImageSizeTask extends Task{
   
+  static {
+    System.setProperty("java.awt.headless", "true");
+  }
+  
   private ArrayList<FileSet> fileSets = new ArrayList<FileSet>();
   private String outFileName;
   
