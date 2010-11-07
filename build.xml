@@ -1,0 +1,12 @@
+<project name="Image Size Report" default='build'>
+	
+	<target name="build">
+		<mkdir dir="bin" />
+		<javac srcdir='src' destdir='bin' includeantruntime='true' />
+	</target>
+	
+	<target name='clean'>
+		<delete dir='bin' />
+	</target>
+	
+</project>

@@ -1,16 +1,21 @@
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.Task;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Task;
 
-import java.io.*;
-import java.util.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 
 public class ImageSizeTask extends Task{
   
-  private ArrayList<FileSet> fileSets;
+  private ArrayList<FileSet> fileSets = new ArrayList<FileSet>();
   private String outFileName;
   
   public void addConfiguredFileSet(FileSet imageFiles) {
@@ -41,6 +46,7 @@ public class ImageSizeTask extends Task{
           out.printf("%s,%d,%d%n", fileName, height, width);
         }
       }
+      
     }
     catch (IOException e) {
       throw new BuildException(e);
