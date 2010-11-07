@@ -3,10 +3,17 @@
 	<target name="build">
 		<mkdir dir="bin" />
 		<javac srcdir='src' destdir='bin' includeantruntime='true' />
+		<copy file='src/antlib.xml' todir='bin' />
+	</target>
+	
+	<target name='jar' depends='build'>
+		<mkdir dir='build' />
+		<jar destfile='build/image-size-report.jar' basedir='bin' />
 	</target>
 	
 	<target name='clean'>
 		<delete dir='bin' />
+		<delete dir='build' />
 	</target>
 	
 </project>
