@@ -1,4 +1,5 @@
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.LogLevel;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
@@ -42,6 +43,7 @@ public class ImageSizeTask extends Task{
         String[] fileNames = ds.getIncludedFiles();
         
         for (String fileName : fileNames) {
+          log("Processing " + fileName, LogLevel.VERBOSE.getLevel());
           BufferedImage image = ImageIO.read(new File(ds.getBasedir(), fileName));
           
           int height = image.getHeight();
@@ -50,6 +52,8 @@ public class ImageSizeTask extends Task{
           out.printf("%s,%d,%d%n", fileName, height, width);
         }
       }
+      
+      log("Image size report written to " + outFileName);
       
     }
     catch (IOException e) {
