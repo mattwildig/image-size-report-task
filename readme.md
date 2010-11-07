@@ -24,5 +24,7 @@ Use it like this:
       </generate-image-size-report>
     </target>
 
+The fileset is a normal ant fileset that should include all the image files you
+want in the report.
 
 Made in response to [this](http://stackoverflow.com/questions/4093130/ant-task-to-extract-image-dimensions-height-width-from-png-and-jpeg-files).
