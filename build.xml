@@ -2,7 +2,7 @@
 	
 	<target name="build">
 		<mkdir dir="bin" />
-		<javac srcdir='src' destdir='bin' includeantruntime='true' />
+		<javac srcdir='src' destdir='bin' includeantruntime='true' debug='true' />
 		<copy file='src/antlib.xml' todir='bin' />
 	</target>
 	
