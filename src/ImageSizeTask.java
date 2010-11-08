@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -28,6 +29,7 @@ public class ImageSizeTask extends Task{
   private String reportFile;
   private boolean checkUpToDate = true;
   private boolean failOnUnreadable = false;
+  private String formatString = "{0},{1},{2}";
   
   public void addConfiguredFileSet(FileSet files) {
     if (imageFiles == null) {
@@ -64,6 +66,10 @@ public class ImageSizeTask extends Task{
     failOnUnreadable = fail;
   }
   
+  public void setFormat(String newFormat) {
+    formatString = newFormat;
+  }
+  
   private boolean upToDate() {
     UpToDate utd = new UpToDate();
     utd.setProject(getProject());
@@ -86,6 +92,7 @@ public class ImageSizeTask extends Task{
     
     try {
       out = new PrintWriter(new BufferedWriter(new FileWriter(reportFile)));
+      MessageFormat format = new MessageFormat(formatString);
       
       DirectoryScanner ds = imageFiles.getDirectoryScanner();
       String[] fileNames = ds.getIncludedFiles();
@@ -113,8 +120,9 @@ public class ImageSizeTask extends Task{
         
         int height = reader.getHeight(reader.getMinIndex());
         int width = reader.getWidth(reader.getMinIndex());
+        Object[] formatData = {fileName, height, width};
         
-        out.printf("%s,%d,%d%n", fileName, height, width);
+        out.println(format.format(formatData));
       }
       
       log("Image size report written to " + reportFile);
