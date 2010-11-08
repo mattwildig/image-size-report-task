@@ -1,3 +1,4 @@
+import org.apache.tools.ant.taskdefs.UpToDate;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.LogLevel;
 import org.apache.tools.ant.BuildException;
@@ -22,6 +23,7 @@ public class ImageSizeTask extends Task{
   
   private FileSet imageFiles;
   private String reportFile;
+  private boolean checkUpToDate = true;
   
   public void addConfiguredFileSet(FileSet files) {
     if (imageFiles == null) {
@@ -50,7 +52,25 @@ public class ImageSizeTask extends Task{
     }
   }
   
+  public void setCheckUpToDate(boolean check) {
+    checkUpToDate = check;
+  }
+  
+  private boolean upToDate() {
+    UpToDate utd = new UpToDate();
+    utd.setProject(getProject());
+    utd.addSrcfiles(imageFiles);
+    utd.setTargetFile(new File(reportFile));
+    
+    return utd.eval();
+  }
+  
   public void execute() throws BuildException {
+    
+    if (checkUpToDate && upToDate()) {
+      log("Report file " + reportFile + " is up to date. Skipping report generation.");
+      return;
+    }
     
     PrintWriter out = null;
     
