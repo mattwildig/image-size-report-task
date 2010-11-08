@@ -24,6 +24,7 @@ public class ImageSizeTask extends Task{
   private FileSet imageFiles;
   private String reportFile;
   private boolean checkUpToDate = true;
+  private boolean failOnUnreadable = false;
   
   public void addConfiguredFileSet(FileSet files) {
     if (imageFiles == null) {
@@ -56,6 +57,10 @@ public class ImageSizeTask extends Task{
     checkUpToDate = check;
   }
   
+  public void setFailOnUnreadable(boolean fail) {
+    failOnUnreadable = fail;
+  }
+  
   private boolean upToDate() {
     UpToDate utd = new UpToDate();
     utd.setProject(getProject());
@@ -66,6 +71,8 @@ public class ImageSizeTask extends Task{
   }
   
   public void execute() throws BuildException {
+    
+    validate();
     
     if (checkUpToDate && upToDate()) {
       log("Report file " + reportFile + " is up to date. Skipping report generation.");
@@ -82,7 +89,19 @@ public class ImageSizeTask extends Task{
       
       for (String fileName : fileNames) {
         log("Processing " + fileName, LogLevel.VERBOSE.getLevel());
-        BufferedImage image = ImageIO.read(new File(ds.getBasedir(), fileName));
+        
+        File imageFile = new File(ds.getBasedir(), fileName);
+        BufferedImage image = ImageIO.read(imageFile);
+        
+        if (image == null) {
+          if (failOnUnreadable) {
+            fail("Image file is not readable: " + imageFile.getPath());
+          }
+          else {
+            log("Image file is not readable: " + imageFile.getPath() + ", skipping.", LogLevel.WARN.getLevel());
+            continue;
+          }
+        }
         
         int height = image.getHeight();
         int width = image.getWidth();
@@ -100,6 +119,16 @@ public class ImageSizeTask extends Task{
       if (out != null) {
         out.close();
       }
+    }
+  }
+  
+  private void validate() {
+    if (reportFile == null) {
+      fail("You must specify a report file.");
+    }
+    
+    if (imageFiles == null) {
+      fail("You must specify a fileset to generate the report against.");
     }
   }
   
