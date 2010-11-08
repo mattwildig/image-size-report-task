@@ -20,11 +20,16 @@ public class ImageSizeTask extends Task{
     System.setProperty("java.awt.headless", "true");
   }
   
-  private ArrayList<FileSet> fileSets = new ArrayList<FileSet>();
+  private FileSet imageFiles;
   private String outFileName;
   
-  public void addConfiguredFileSet(FileSet imageFiles) {
-    fileSets.add(imageFiles);
+  public void addConfiguredFileSet(FileSet files) {
+    if (imageFiles == null) {
+      imageFiles = files;
+    }
+    else {
+      throw new BuildException(getTaskName() + ": You can only specify one fileset.");
+    }
   }
   
   public void setOutFile(String name) {
@@ -38,19 +43,17 @@ public class ImageSizeTask extends Task{
     try {
       out = new PrintWriter(new BufferedWriter(new FileWriter(outFileName)));
       
-      for (FileSet fileSet : fileSets) {
-        DirectoryScanner ds = fileSet.getDirectoryScanner();
-        String[] fileNames = ds.getIncludedFiles();
+      DirectoryScanner ds = imageFiles.getDirectoryScanner();
+      String[] fileNames = ds.getIncludedFiles();
+      
+      for (String fileName : fileNames) {
+        log("Processing " + fileName, LogLevel.VERBOSE.getLevel());
+        BufferedImage image = ImageIO.read(new File(ds.getBasedir(), fileName));
         
-        for (String fileName : fileNames) {
-          log("Processing " + fileName, LogLevel.VERBOSE.getLevel());
-          BufferedImage image = ImageIO.read(new File(ds.getBasedir(), fileName));
-          
-          int height = image.getHeight();
-          int width = image.getWidth();
-          
-          out.printf("%s,%d,%d%n", fileName, height, width);
-        }
+        int height = image.getHeight();
+        int width = image.getWidth();
+        
+        out.printf("%s,%d,%d%n", fileName, height, width);
       }
       
       log("Image size report written to " + outFileName);
