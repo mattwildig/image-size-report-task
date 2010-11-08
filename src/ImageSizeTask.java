@@ -5,15 +5,18 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
 
 public class ImageSizeTask extends Task{
   
@@ -91,9 +94,12 @@ public class ImageSizeTask extends Task{
         log("Processing " + fileName, LogLevel.VERBOSE.getLevel());
         
         File imageFile = new File(ds.getBasedir(), fileName);
-        BufferedImage image = ImageIO.read(imageFile);
+        ImageInputStream iis = new FileImageInputStream(imageFile);
+        Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
         
-        if (image == null) {
+        ImageReader reader = readers.hasNext() ? readers.next() : null;
+        
+        if (reader == null) {
           if (failOnUnreadable) {
             fail("Image file is not readable: " + imageFile.getPath());
           }
@@ -103,8 +109,10 @@ public class ImageSizeTask extends Task{
           }
         }
         
-        int height = image.getHeight();
-        int width = image.getWidth();
+        reader.setInput(iis);
+        
+        int height = reader.getHeight(reader.getMinIndex());
+        int width = reader.getWidth(reader.getMinIndex());
         
         out.printf("%s,%d,%d%n", fileName, height, width);
       }
