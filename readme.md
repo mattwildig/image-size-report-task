@@ -47,6 +47,7 @@ The attributes you can set are:
   file (relative to the base directory of the fileset), `{1}` is the height of
   the image and `{2}` is the width. You need to be careful of getting your
   escapes right with this field - both xml escapes (so use `&lt;` rather than
-  `<`) and the relevant MessageFormat escapes (mainly single quotes).
+  `<`) and the relevant MessageFormat escapes (mainly single quotes). (Default
+  "`{0},{1},{2}`").
 
 Made in response to [this](http://stackoverflow.com/questions/4093130/ant-task-to-extract-image-dimensions-height-width-from-png-and-jpeg-files).
