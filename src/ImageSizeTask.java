@@ -21,19 +21,33 @@ public class ImageSizeTask extends Task{
   }
   
   private FileSet imageFiles;
-  private String outFileName;
+  private String reportFile;
   
   public void addConfiguredFileSet(FileSet files) {
     if (imageFiles == null) {
       imageFiles = files;
     }
     else {
-      throw new BuildException(getTaskName() + ": You can only specify one fileset.");
+      fail("You can only specify one fileset.");
     }
   }
   
   public void setOutFile(String name) {
-    outFileName = name;
+    log("Warning: you should use 'reportFile' instead of 'outFile'", LogLevel.WARN.getLevel());
+    checkAndSetReportFile(name);
+  }
+  
+  public void setReportFile(String name) {
+    checkAndSetReportFile(name);
+  }
+  
+  private void checkAndSetReportFile(String name) {
+    if (reportFile == null) {
+      reportFile = name;
+    }
+    else {
+      fail("Only set one of 'reportFile' or 'outFile' (use 'reportFile')");
+    }
   }
   
   public void execute() throws BuildException {
@@ -41,7 +55,7 @@ public class ImageSizeTask extends Task{
     PrintWriter out = null;
     
     try {
-      out = new PrintWriter(new BufferedWriter(new FileWriter(outFileName)));
+      out = new PrintWriter(new BufferedWriter(new FileWriter(reportFile)));
       
       DirectoryScanner ds = imageFiles.getDirectoryScanner();
       String[] fileNames = ds.getIncludedFiles();
@@ -56,7 +70,7 @@ public class ImageSizeTask extends Task{
         out.printf("%s,%d,%d%n", fileName, height, width);
       }
       
-      log("Image size report written to " + outFileName);
+      log("Image size report written to " + reportFile);
       
     }
     catch (IOException e) {
@@ -67,6 +81,10 @@ public class ImageSizeTask extends Task{
         out.close();
       }
     }
+  }
+  
+  private void fail(String message){
+    throw new BuildException(getTaskName() + ": " + message);
   }
   
 }

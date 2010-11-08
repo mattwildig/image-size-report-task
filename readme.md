@@ -17,7 +17,7 @@ Use it like this:
     ...
     
     <target name="...">
-      <generate-image-size-report outFile="whatever_you_want.txt">
+      <generate-image-size-report reportFile="whatever_you_want.txt">
           <fileset dir="..." />
             <includes ... />
           </fileset>
