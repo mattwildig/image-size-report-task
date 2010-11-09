@@ -5,6 +5,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 
+import java.awt.Toolkit;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -23,6 +24,7 @@ public class ImageSizeTask extends Task{
   
   static {
     System.setProperty("java.awt.headless", "true");
+    Toolkit.getDefaultToolkit(); //work around some quirks of mac java reading tiff files
   }
   
   private FileSet imageFiles;
