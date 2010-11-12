@@ -94,12 +94,10 @@ public class ImageSizeTask extends Task{
     
     try {
       out = new PrintWriter(new BufferedWriter(new FileWriter(reportFile)));
-      MessageFormat format = new MessageFormat(formatString);
       
       DirectoryScanner ds = imageFiles.getDirectoryScanner();
-      String[] fileNames = ds.getIncludedFiles();
       
-      for (String fileName : fileNames) {
+      for (String fileName : ds.getIncludedFiles()) {
         log("Processing " + fileName, LogLevel.VERBOSE.getLevel());
         
         File imageFile = new File(ds.getBasedir(), fileName);
@@ -124,6 +122,7 @@ public class ImageSizeTask extends Task{
         int width = reader.getWidth(reader.getMinIndex());
         Object[] formatData = {fileName, height, width};
         
+        MessageFormat format = new MessageFormat(formatString);
         out.println(format.format(formatData));
       }
       
