@@ -1,10 +1,10 @@
 #Image Size Report Ant Task#
 
-Generates a comma separated text file of filenames and their dimensions, with a
-customisable format.  The default format looks like:
+Generates a report of filenames and image dimensions for a set of image files.
+The output file format is customisable, but the default looks like:
 
-    <filename1>,<height>,<width>
-    <filename2>,<height>,<width>
+    <filename1>,<height1>,<width1>
+    <filename2>,<height2>,<width2>
 
 Build it like this (a jar will be generated in a `build` directory):
 
