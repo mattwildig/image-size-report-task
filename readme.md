@@ -1,4 +1,4 @@
-#Image Size Report Ant Task#
+# Image Size Report Ant Task
 
 Generates a report of filenames and image dimensions for a set of image files.
 The output file format is customisable, but the default looks like:
